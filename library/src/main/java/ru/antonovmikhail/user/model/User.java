@@ -1,40 +1,37 @@
-package ru.antonovmikhail.order.model;
+package ru.antonovmikhail.user.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
-import ru.antonovmikhail.user.model.User;
+import ru.antonovmikhail.util.Views;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity(name = "wallets")
+@Entity
+@Table(name = "users")
 @Getter
 @Setter
 @ToString
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
-public class Order {
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     @JsonProperty(value = "uuid")
+    @JsonView(Views.UserDetails.class)
     private UUID id;
-    private BigDecimal price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @JsonIgnore
-    private User customer;
-    @Column(name = "product_name")
-    private String productName;
-    private String description;
-    Boolean paid;
+    @JsonView(Views.UserSummary.class)
+    private String name;
+    @Column(unique = true)
+    @JsonView(Views.UserDetails.class)
+    private String email;
 
     @Override
     public final boolean equals(Object o) {
@@ -43,8 +40,8 @@ public class Order {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Order order = (Order) o;
-        return getId() != null && Objects.equals(getId(), order.getId());
+        User user = (User) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
     }
 
     @Override
