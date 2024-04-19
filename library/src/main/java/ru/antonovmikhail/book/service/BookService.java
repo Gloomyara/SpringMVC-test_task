@@ -1,6 +1,6 @@
 package ru.antonovmikhail.book.service;
 
-import ru.antonovmikhail.book.model.Book;
+import org.springframework.data.domain.Pageable;
 import ru.antonovmikhail.book.model.dto.BookDtoIn;
 import ru.antonovmikhail.book.model.dto.BookDtoOut;
 import ru.antonovmikhail.book.model.dto.NewBookDto;
@@ -17,7 +17,7 @@ public interface BookService {
 
     BookDtoOut update(BookDtoIn dtoIn);
 
-    List<BookDtoOut> findAll(Integer from, Integer size, String sortBy);
+    List<BookDtoOut> findAll(Pageable pageable);
 
     BookDtoOut delete(UUID id);
 }

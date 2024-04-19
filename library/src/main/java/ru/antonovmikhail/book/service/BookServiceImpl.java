@@ -3,7 +3,7 @@ package ru.antonovmikhail.book.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.antonovmikhail.book.mapper.BookMapper;
@@ -14,7 +14,6 @@ import ru.antonovmikhail.book.model.dto.NewBookDto;
 import ru.antonovmikhail.book.repository.BookRepository;
 import ru.antonovmikhail.user.model.User;
 import ru.antonovmikhail.user.repository.UserRepository;
-import ru.antonovmikhail.util.Pager;
 
 import java.util.List;
 import java.util.UUID;
@@ -56,8 +55,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookDtoOut> findAll(Integer from, Integer size, String sortBy) {
-        return mapper.toDto(repository.findAll(new Pager(from, size, Sort.by(sortBy))).toList());
+    public List<BookDtoOut> findAll(Pageable pageable) {
+        return mapper.toDto(repository.findAll((org.springframework.data.domain.Pageable) pageable).toList());
     }
 
     @Override

@@ -1,19 +1,20 @@
 package ru.antonovmikhail.book.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.antonovmikhail.book.model.Book;
 import ru.antonovmikhail.book.model.dto.BookDtoIn;
 import ru.antonovmikhail.book.model.dto.BookDtoOut;
 import ru.antonovmikhail.book.model.dto.NewBookDto;
 import ru.antonovmikhail.book.service.BookService;
+import ru.antonovmikhail.util.Pager;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,11 +32,10 @@ public class BookController {
 
     @GetMapping("books")
     public ResponseEntity<List<BookDtoOut>> getAll(
-            @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-            @RequestParam(defaultValue = "10") @Positive Integer size,
-            @RequestParam(defaultValue = "author") String sortBy) {
+            @PageableDefault(sort = "publishDate", direction = Sort.Direction.DESC)
+            Pager pageable) {
         log.info("Received GET api/v1/books request.");
-        return ResponseEntity.ok(bookService.findAll(from, size, sortBy));
+        return ResponseEntity.ok(bookService.findAll(pageable));
     }
 
 
